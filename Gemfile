@@ -10,6 +10,7 @@ gem "rack-cors"
 gem "bcrypt"
 gem "graphql"
 gem "figaro"
+
 gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 gem "bootsnap", require: false
 
@@ -18,6 +19,8 @@ group :development, :test do
   gem "pry"
   gem "shoulda-matchers"  
   gem "capybara"
+  gem "factory_bot_rails"
+  gem "faker"
 end
 
 group :development do
