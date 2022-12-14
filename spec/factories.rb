@@ -3,6 +3,13 @@ FactoryBot.define do
     role { rand(0..1) }
     title { Faker::Fantasy::Tolkien.character }
   end 
+  factory :size do 
+    name { ['S', 'M', 'L', 'XL', 'XXL', 'XXXL'].sample }
+  end 
+
+  factory :color do 
+    name { Faker::Fantasy::Tolkien.race }
+  end 
 
   factory :item do 
     name { Faker::Name.first_name }
@@ -10,9 +17,15 @@ FactoryBot.define do
     stock { rand(1..200) }
     price { rand(20..350) }
     discount { rand(1..50) }
-    color { Faker::Fantasy::Tolkien.race }
-    material { Faker::Fantasy::Tolkien.poem }
+    material { [Faker::Fantasy::Tolkien.poem] }
     category { nil } 
-    images { Faker::Fantasy::Tolkien.location }
+    images { [Faker::Fantasy::Tolkien.location] }
+  end 
+  
+  factory :item_size_color do 
+    item { nil }
+    color { nil }
+    size { nil }
+    quantity { rand(1..100) }
   end 
 end 

@@ -6,9 +6,8 @@ class CreateItems < ActiveRecord::Migration[7.0]
       t.integer :stock
       t.float :price
       t.float :discount
-      t.string :images
-      t.string :color
-      t.string :material
+      t.string :images, array: true, default: []
+      t.string :material, array: true, default: []
       t.references :category, null: false, foreign_key: true
 
       t.timestamps

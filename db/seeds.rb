@@ -17,7 +17,6 @@ item0 = Item.create(
   price: 25.00,
   discount: 0.00,
   material: "100% Cotton",
-  color: "White"
 )
 
 item1 = Item.create(
@@ -28,7 +27,6 @@ item1 = Item.create(
   price: 25.00,
   discount: 0.00,
   material: "100% Cotton",
-  color: "Yellow"
 )
 
 item2 = Item.create(
@@ -39,5 +37,4 @@ item2 = Item.create(
   price: 25.00,
   discount: 0.00,
   material: "100% Cotton",
-  color: "Light Blue"
 )
