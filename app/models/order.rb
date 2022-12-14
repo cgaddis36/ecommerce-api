@@ -1,7 +1,7 @@
 class Order < ApplicationRecord
   belongs_to :user
   has_many :order_items 
-  has_many :items, :through => :order_items
+  has_many :item_size_colors, :through => :order_items
   enum status: {
     placed: 0,
     shipped: 1,
