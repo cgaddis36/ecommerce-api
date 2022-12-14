@@ -15,7 +15,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_09_192212) do
   enable_extension "plpgsql"
 
   create_table "categories", force: :cascade do |t|
-    t.integer "role"
+    t.integer "role", default: 0
     t.string "title"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -57,14 +57,14 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_09_192212) do
     t.float "item_subtotal"
     t.float "tax"
     t.float "total"
-    t.integer "status"
+    t.integer "status", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_orders_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
-    t.integer "role"
+    t.integer "role", default: 0
     t.string "first_name"
     t.string "last_name"
     t.string "email"
