@@ -9,7 +9,7 @@ class CreateOrders < ActiveRecord::Migration[7.0]
       t.float :item_subtotal
       t.float :tax
       t.float :total
-      t.integer :status
+      t.integer :status, default: 0
 
       t.timestamps
     end

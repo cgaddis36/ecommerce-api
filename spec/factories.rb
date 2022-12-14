@@ -1,6 +1,6 @@
 FactoryBot.define do 
   factory :category do 
-    role { rand(0..3) }
+    role { rand(0..1) }
     title { Faker::Fantasy::Tolkien.character }
   end 
 
