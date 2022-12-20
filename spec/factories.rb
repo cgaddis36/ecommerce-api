@@ -20,6 +20,7 @@ FactoryBot.define do
     material { [Faker::Fantasy::Tolkien.poem] }
     category { nil } 
     images { [Faker::Fantasy::Tolkien.location] }
+    subcategory { rand(0..4) }
   end 
   
   factory :item_size_color do 

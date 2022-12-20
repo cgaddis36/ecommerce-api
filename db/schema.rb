@@ -69,6 +69,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_15_192212) do
     t.integer "stock"
     t.float "price"
     t.float "discount"
+    t.integer "subcategory", default: 0
     t.string "images", default: [], array: true
     t.string "material", default: [], array: true
     t.bigint "category_id", null: false
