@@ -1,8 +1,8 @@
 class User < ApplicationRecord
   has_many :orders 
+  has_one :cart
   enum role: {
-    guest: 0,
-    member: 1,
-    admin: 2
+    member: 0,
+    admin: 1
   }
 end
