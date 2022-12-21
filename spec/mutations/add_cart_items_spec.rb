@@ -89,10 +89,9 @@ RSpec.describe '', type: :request do
       color: @color3, 
       stock: 3
       )
-
   end 
-
   it "Adds an item and its quantity to the User's Cart" do 
+
     user_id = @user0.id
     item_size_color_id = @item_size_color1.id 
     quantity = 2
@@ -103,8 +102,9 @@ RSpec.describe '', type: :request do
         quantity
     )}
     reply = JSON.parse(response.body, symbolize_names: true)
+
     data = reply[:data]
-    request_data = data[:addItemsToCart]
+    request_data = data[:addCartItems]
     user = request_data[:user]
     expect(user).to_not be_empty
     expect(user[:id].to_i).to eq(user_id)
@@ -129,7 +129,7 @@ RSpec.describe '', type: :request do
     )}
     reply = JSON.parse(response.body, symbolize_names: true)
     data = reply[:data]
-    request_data = data[:addItemsToCart]
+    request_data = data[:addCartItems]
     user = request_data[:user]
 
 
@@ -143,8 +143,8 @@ RSpec.describe '', type: :request do
   end 
   it "Adds a new quantity to a cart_item that is already in the users cart" do 
     user_cart = create(:cart, user: @user3)
-    cart_item = create(:cart_item, cart: user_cart, item_size_color: @item_size_color3, quantity: 2)
-    cart_item = create(:cart_item, cart: user_cart, item_size_color: @item_size_color0, quantity: 2)
+    cart_item0 = create(:cart_item, cart: user_cart, item_size_color: @item_size_color3, quantity: 2)
+    cart_item1 = create(:cart_item, cart: user_cart, item_size_color: @item_size_color0, quantity: 2)
 
     user_id = @user3.id
     item_size_color_id = @item_size_color3.id 
@@ -157,14 +157,15 @@ RSpec.describe '', type: :request do
     )}
     reply = JSON.parse(response.body, symbolize_names: true)
     data = reply[:data]
-    request_data = data[:addItemsToCart]
+    request_data = data[:addCartItems]
     user = request_data[:user]
 
     cart = user[:cart]
     cartItems = cart[:cartItems]
     expect(cartItems.count).to eq(2)
-    cartItem = cartItems[0]
-    expect(cartItem[:quantity]).to eq(4)
+
+    updated_cart_item = CartItem.find(cart_item0.id)
+    expect(updated_cart_item.quantity).to eq(4)
   end 
   def query_string(
     user_id,
@@ -173,7 +174,7 @@ RSpec.describe '', type: :request do
     )
     <<~GQL 
       mutation {
-        addItemsToCart(input: {
+        addCartItems(input: {
           userId: "#{user_id}",
           itemSizeColorId: "#{item_size_color_id}",
           quantity: "#{quantity}"}

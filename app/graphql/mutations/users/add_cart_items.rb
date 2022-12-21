@@ -1,6 +1,6 @@
 module Mutations 
   module Users 
-    class AddItemsToCart < Mutations::BaseMutation
+    class AddCartItems < Mutations::BaseMutation
       type Types::UserType, null: false 
       argument :user_id, String, required: true
       argument :item_size_color_id, String, required: true
@@ -26,7 +26,7 @@ module Mutations
           cart = user.cart 
           if !cart.nil? && cart_item = CartItem.find_by(cart_id: cart.id, item_size_color_id: item_size_color_id)
             new_quantity = cart_item.quantity += quantity.to_i
-            cart_item.update(quantity: new_quantity) 
+            cart_item.update!(quantity: new_quantity) 
           elsif !cart.nil?
             CartItem.create(
               cart_id: cart.id, 
