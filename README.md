@@ -32,15 +32,37 @@
 | has_one :cart |
 | has_many :orders |
 
-| Cart | Item |
-| ----------- | ----------- |
-| belongs_to :user | belongs_to :category |
-| has_many :cart_items | has_many :item_size_colors |
-| has_many :color_size_items, through: => :cart_items | has_many :sizes, through: => :item_size_colors |
-| | has_many :colors, through: => :item_size_colors |
+| Cart |
+| ----------- |
+| belongs_to :user |
+| has_many :cart_items |
+| has_many :color_size_items, through: => :cart_items |
 
-| Size | Color |
-| ----------- | ----------- |
-| has_many :item_size_colors | has_many :item_size_colors |
-| has_many :items, :through => :item_size_colors | has_many :items, :through => :item_size_colors |
-| has_many :colors, :through => :item_size_colors | has_many :sizes, :through => :item_size_colors |
+| Item |
+| ----------- |
+| belongs_to :category |
+| has_many :item_size_colors |
+| has_many :sizes, through: => :item_size_colors |
+| has_many :colors, through: => :item_size_colors |
+
+| Size | 
+| ----------- |
+| has_many :item_size_colors |
+| has_many :items, :through => :item_size_colors | 
+| has_many :colors, :through => :item_size_colors | 
+
+| Color |
+| ----------- |
+| has_many :item_size_colors |
+| has_many :items, :through => :item_size_colors |
+| has_many :sizes, :through => :item_size_colors |
+
+| ItemSizeColor |
+| ----------- |
+| has_many :order_items |
+| has_many :orders, :through => :order_items |
+| has_many :cart_items |
+| has_many :carts, :through => :cart_items |
+| belongs_to :item |
+| belongs_to :size |
+| belongs_to :color |
