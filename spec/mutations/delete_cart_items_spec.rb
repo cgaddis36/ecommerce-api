@@ -94,6 +94,11 @@ RSpec.describe 'It removes the correct items from cart', type: :request do
     @cart1 = create(:cart, user: @user1)
     @cart_item2 = create(:cart_item, item_size_color: @item_size_color3, cart: @cart1, quantity: 2)
     @cart_item3 = create(:cart_item, item_size_color: @item_size_color4, cart: @cart1, quantity: 1)
+
+    @cart2 = create(:cart, user: @user3)
+    @cart_item4 = create(:cart_item, item_size_color: @item_size_color7, cart: @cart2, quantity: 1)
+
+
   end 
   it "Removes one quantity of a cart_item that has more than one in the cart" do
     quantity = 1
@@ -102,11 +107,45 @@ RSpec.describe 'It removes the correct items from cart', type: :request do
     reply = JSON.parse(response.body, symbolize_names: true)
 
     data = reply[:data]
-    cart = data[:cart]
+    request_data = data[:deleteCartItems]
+
+    user = request_data[:user]
+    cart = user[:cart]
 
     cart_items = cart[:cartItems]
     cart_item = cart_items.first
-    expect(cart_item.quantity).to eq(1)
+    expect(cart_item[:quantity]).to eq(1)
+  end 
+  it "Deletes the CartItem object if the quantity selected to delete is equal to the quantity currently in the user's cart." do 
+    quantity = 2
+    cart_item_id = @cart_item2.id
+    post "/graphql", params: {query: query_string(cart_item_id, quantity)}
+    reply = JSON.parse(response.body, symbolize_names: true)
+
+    data = reply[:data]
+    request_data = data[:deleteCartItems]
+
+    user = request_data[:user]
+    cart = user[:cart]
+
+    cart_items = cart[:cartItems]
+    expect(cart_items.count).to eq(1)
+  end 
+  it "CartItems are empty if the item removed is the last in the cart" do 
+    quantity = 1
+    cart_item_id = @cart_item4.id
+    post "/graphql", params: {query: query_string(cart_item_id, quantity)}
+    reply = JSON.parse(response.body, symbolize_names: true)
+
+    data = reply[:data]
+    request_data = data[:deleteCartItems]
+
+    user = request_data[:user]
+    cart = user[:cart]
+
+    cart_items = cart[:cartItems]
+
+    expect(cart_items).to be_empty
   end 
   def query_string(
     cart_item_id,
@@ -119,14 +158,14 @@ RSpec.describe 'It removes the correct items from cart', type: :request do
           cartItemId: "#{cart_item_id}",
           quantity: "#{quantity}" 
         }) {
-          cart {
+          user {
             id 
-            cartItems {
+            cart {
               id
-              quantity
-            }
-            user {
-              id
+              cartItems {
+                id
+                quantity
+              }
             }
           }
         }
