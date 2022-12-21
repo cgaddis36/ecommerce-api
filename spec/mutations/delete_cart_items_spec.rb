@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe '', type: :request do 
+RSpec.describe 'It removes the correct items from cart', type: :request do 
   before(:each) do 
     @user0 = create(:user)
     @user1 = create(:user)
@@ -44,7 +44,6 @@ RSpec.describe '', type: :request do
       color: @color0, 
       stock: 5
       )
-
     @item_size_color2 = create(
       :item_size_color, 
       item: @item0, 
@@ -59,7 +58,6 @@ RSpec.describe '', type: :request do
       color: @color0, 
       stock: 5
       )
-
     @item_size_color4 = create(
       :item_size_color, 
       item: @item1, 
@@ -89,121 +87,84 @@ RSpec.describe '', type: :request do
       color: @color3, 
       stock: 3
       )
+    @cart0 = create(:cart, user: @user0)
+    @cart_item0 = create(:cart_item, item_size_color: @item_size_color0, cart: @cart0, quantity: 2)
+    @cart_item1 = create(:cart_item, item_size_color: @item_size_color1, cart: @cart0, quantity: 1)
+
+    @cart1 = create(:cart, user: @user1)
+    @cart_item2 = create(:cart_item, item_size_color: @item_size_color3, cart: @cart1, quantity: 2)
+    @cart_item3 = create(:cart_item, item_size_color: @item_size_color4, cart: @cart1, quantity: 1)
+
+    @cart2 = create(:cart, user: @user3)
+    @cart_item4 = create(:cart_item, item_size_color: @item_size_color7, cart: @cart2, quantity: 1)
+
 
   end 
-
-  it "Adds an item and its quantity to the User's Cart" do 
-    user_id = @user0.id
-    item_size_color_id = @item_size_color1.id 
-    quantity = 2
-    post "/graphql", params: {
-      query: query_string(
-        user_id, 
-        item_size_color_id, 
-        quantity
-    )}
+  it "Removes one quantity of a cart_item that has more than one in the cart" do
+    quantity = 1
+    cart_item_id = @cart_item0.id
+    post "/graphql", params: {query: query_string(cart_item_id, quantity)}
     reply = JSON.parse(response.body, symbolize_names: true)
+
     data = reply[:data]
-    request_data = data[:addItemsToCart]
+    request_data = data[:deleteCartItems]
+
     user = request_data[:user]
-    expect(user).to_not be_empty
-    expect(user[:id].to_i).to eq(user_id)
     cart = user[:cart]
-    cartItems = cart[:cartItems]
-    expect(cartItems.count).to eq(1)
-    cartItem = cartItems[0]
-    expect(cartItem[:quantity]).to eq(quantity)
+
+    cart_items = cart[:cartItems]
+    cart_item = cart_items.first
+    expect(cart_item[:quantity]).to eq(1)
   end 
-  it "Adds a new cart_item and its quantity to the User's Cart when there is already an existing cart with other items in it." do 
-    user_cart = create(:cart, user: @user1)
-    cart_item = create(:cart_item, cart: user_cart, item_size_color: @item_size_color0, quantity: 2)
-
-    user_id = @user1.id
-    item_size_color_id = @item_size_color3.id 
+  it "Deletes the CartItem object if the quantity selected to delete is equal to the quantity currently in the user's cart." do 
     quantity = 2
-    post "/graphql", params: {
-      query: query_string(
-        user_id, 
-        item_size_color_id, 
-        quantity
-    )}
+    cart_item_id = @cart_item2.id
+    post "/graphql", params: {query: query_string(cart_item_id, quantity)}
     reply = JSON.parse(response.body, symbolize_names: true)
+
     data = reply[:data]
-    request_data = data[:addItemsToCart]
+    request_data = data[:deleteCartItems]
+
     user = request_data[:user]
-
-
     cart = user[:cart]
-    cartItems = cart[:cartItems]
-    expect(cartItems.count).to eq(2)
-    cartItem = cartItems[0]
-    expect(cartItem[:quantity]).to eq(2)
-    cartItem0 = cartItems[1]
-    expect(cartItem[:quantity]).to eq(2)
+
+    cart_items = cart[:cartItems]
+    expect(cart_items.count).to eq(1)
   end 
-  it "Adds a new quantity to a cart_item that is already in the users cart" do 
-    user_cart = create(:cart, user: @user3)
-    cart_item = create(:cart_item, cart: user_cart, item_size_color: @item_size_color3, quantity: 2)
-    cart_item = create(:cart_item, cart: user_cart, item_size_color: @item_size_color0, quantity: 2)
-
-    user_id = @user3.id
-    item_size_color_id = @item_size_color3.id 
-    quantity = 2
-    post "/graphql", params: {
-      query: query_string(
-        user_id, 
-        item_size_color_id, 
-        quantity
-    )}
+  it "CartItems are empty if the item removed is the last in the cart" do 
+    quantity = 1
+    cart_item_id = @cart_item4.id
+    post "/graphql", params: {query: query_string(cart_item_id, quantity)}
     reply = JSON.parse(response.body, symbolize_names: true)
-    data = reply[:data]
-    request_data = data[:addItemsToCart]
-    user = request_data[:user]
 
+    data = reply[:data]
+    request_data = data[:deleteCartItems]
+
+    user = request_data[:user]
     cart = user[:cart]
-    cartItems = cart[:cartItems]
-    expect(cartItems.count).to eq(2)
-    cartItem = cartItems[0]
-    expect(cartItem[:quantity]).to eq(4)
+
+    cart_items = cart[:cartItems]
+
+    expect(cart_items).to be_empty
   end 
   def query_string(
-    user_id,
-    item_size_color_id,
+    cart_item_id,
     quantity
-    )
+  )
     <<~GQL 
       mutation {
-        addItemsToCart(input: {
-          userId: "#{user_id}",
-          itemSizeColorId: "#{item_size_color_id}",
-          quantity: "#{quantity}"}
-        ) {
-          user{ 
-            id
-            firstName
-            lastName 
+        deleteCartItems(
+          input: {
+          cartItemId: "#{cart_item_id}",
+          quantity: "#{quantity}" 
+        }) {
+          user {
+            id 
             cart {
               id
               cartItems {
                 id
                 quantity
-                itemSizeColor {
-                  id
-                  stock
-                  item {
-                    id
-                    name 
-                    price
-                  }
-                  color {
-                    id
-                    name 
-                  }
-                  size {
-                    id 
-                    name
-                  }
-                }
               }
             }
           }
