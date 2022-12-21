@@ -13,6 +13,7 @@ module Types
     field :tax, Float
     field :total, Float
     field :cart_items, [Types::CartItemType]
+    field :user, Types::UserType
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
   end
