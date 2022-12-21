@@ -161,11 +161,11 @@ RSpec.describe '', type: :request do
     user = request_data[:user]
 
     cart = user[:cart]
-    cartItems = cart[:cartItems]
-    expect(cartItems.count).to eq(2)
+    cart_items = cart[:cartItems]
+    expect(cart_items.count).to eq(2)
 
-    updated_cart_item = CartItem.find(cart_item0.id)
-    expect(updated_cart_item.quantity).to eq(4)
+    updated_cart_item = cart_items[1]
+    expect(updated_cart_item[:quantity]).to eq(4)
   end 
   def query_string(
     user_id,
