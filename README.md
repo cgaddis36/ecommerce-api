@@ -1,24 +1,35 @@
-# README
+# E Commerce API
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Features
+### Completed
+- Shopping Cart
 
-Things you may want to cover:
+### In Progress
+- User Login
+- User Orders 
 
-* Ruby version
+## Dependencies
+- ruby 3.0.4
+- rails 7.0.4 
+- graphql
+- pg 1.1
+- puma 6.0.0
+- rack-cors 
+- bcrypt 
+- figaro
+ 
+### Testing Packages
+- faker
+- factory_bot_rails
+- capybara 
+- rspec-rails 
+- pry 
+- shoulda-matchers
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Database Architecture 
+| User | Cart | Item |
+| ----------- | ----------- | ----------- |
+| has_one :cart | belongs_to :user | belongs_to :category |
+| has_many :orders | has_many :cart_items | has_many :item_size_colors |
+| | has_many :color_size_items, through: => :cart_items | has_many :sizes, through: => :item_size_colors |
+| | | has_many :colors, through: => :item_size_colors |
