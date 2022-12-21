@@ -4,7 +4,7 @@ class CreateItemSizeColors < ActiveRecord::Migration[7.0]
       t.references :item, null: false, foreign_key: true
       t.references :size, null: false, foreign_key: true
       t.references :color, null: false, foreign_key: true
-      t.integer :quantity
+      t.integer :stock
 
       t.timestamps
     end
