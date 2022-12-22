@@ -217,3 +217,11 @@
 #### Users
 - findUser
 - findCart
+
+##Testing Suite
+**Command Line Instructions**
+- `bundle install`
+- `rails db:{create,migrate,seed}`
+- `bundle exec rspec`
+
+
