@@ -218,7 +218,7 @@
 - findUser
 - findCart
 
-##Testing Suite
+## Testing Suite
 **Command Line Instructions**
 - `bundle install`
 - `rails db:{create,migrate,seed}`
