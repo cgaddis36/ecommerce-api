@@ -100,3 +100,120 @@
 | belongs_to :order |
 | belongs_to :item_size_color |
 - Similar to CartItem model, we relate the OrderItem model to ItemSizeColor model to keep stock of items inventory for different sizes and colors of the same item.
+
+## GraphQL Requests
+### Mutations 
+#### Users
+- addCartItems </br>
+`addCartItems(input: {
+   userId: "#{user_id}",
+   itemSizeColorId: "#{item_size_color_id}",
+   quantity: "#{quantity}"}
+ ) {
+   user{ 
+     id
+     firstName
+     lastName 
+     cart {
+       id
+       cartItems {
+         id
+         quantity
+         itemSizeColor {
+           id
+           stock
+           item {
+             id
+             name 
+             price
+           }
+           color {
+             id
+             name 
+           }
+           size {
+             id 
+             name
+           }
+         }
+       }
+     }
+   }
+ }`</br>
+- deleteCartItems</br>
+`deleteCartItems(
+   input: {
+   cartItemId: "#{cart_item_id}",
+   quantity: "#{quantity}" 
+ }) {
+   user {
+     id 
+     cart {
+       id
+       cartItems {
+         id
+         quantity
+       }
+     }
+   }
+ }`</br>
+### Queries
+#### Items 
+- allItems </br>
+`allItems {
+  name
+  price
+  discount
+  stock
+  description
+  category {
+    role 
+    title
+  }}`</br>
+- findItem</br>
+`findItem(id: "#{id}") {
+  id 
+  name 
+  description
+  stock 
+  price 
+  discount
+  category {
+    title 
+    role
+  }
+ }`</br>
+- findItemsBySubcategory </br>
+`findItemsBySubcategory(
+  role: "#{role}",
+  subcategory: "#{subcategory}"
+) {
+  id 
+  name 
+  description 
+  stock 
+  price 
+  discount 
+  category {
+    id 
+    title 
+    role 
+  }
+}`</br>
+- findItems</br>
+`findItems(role: "#{role}") {
+ id 
+ name 
+ description 
+ stock 
+ price 
+ discount 
+ category {
+   id 
+   title 
+   role 
+ }
+}`</br>
+#### Users
+- findUser
+- findCart
