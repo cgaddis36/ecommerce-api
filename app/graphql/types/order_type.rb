@@ -12,6 +12,7 @@ module Types
     field :tax, Float
     field :total, Float
     field :status, Integer
+    field :order_items, [Types::OrderItemType]
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
   end
