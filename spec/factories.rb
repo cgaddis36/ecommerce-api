@@ -26,9 +26,8 @@ FactoryBot.define do
   factory :item do 
     name { Faker::Name.first_name }
     description { Faker::ChuckNorris.fact }
-    stock { rand(1..200) }
     price { rand(20..350) }
-    discount { rand(1..50) }
+    discount { 0.00 }
     material { [Faker::Fantasy::Tolkien.poem] }
     category { nil } 
     images { [Faker::Fantasy::Tolkien.location] }
