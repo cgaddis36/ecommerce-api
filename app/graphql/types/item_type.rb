@@ -5,7 +5,6 @@ module Types
     field :id, ID, null: false
     field :name, String
     field :description, String
-    field :stock, Integer
     field :price, Float
     field :discount, Float
     field :images, String
