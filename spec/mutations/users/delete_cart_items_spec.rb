@@ -97,8 +97,6 @@ RSpec.describe 'It removes the correct items from cart', type: :request do
 
     @cart2 = create(:cart, user: @user3)
     @cart_item4 = create(:cart_item, item_size_color: @item_size_color7, cart: @cart2, quantity: 1)
-
-
   end 
   it "Removes one quantity of a cart_item that has more than one in the cart" do
     quantity = 1
