@@ -26,11 +26,8 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_15_192212) do
 
   create_table "carts", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.integer "item_count"
-    t.float "total_weight"
     t.string "shipping_zip_code"
     t.float "estimated_shipping"
-    t.float "item_subtotal"
     t.float "discount"
     t.float "tax"
     t.float "total"
@@ -67,7 +64,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_15_192212) do
   create_table "items", force: :cascade do |t|
     t.string "name"
     t.string "description"
-    t.integer "stock"
     t.float "price"
     t.float "discount"
     t.integer "subcategory", default: 0
@@ -93,8 +89,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_15_192212) do
 
   create_table "orders", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.integer "item_count"
-    t.float "total_weight"
     t.string "shipping_first_name"
     t.string "shipping_last_name"
     t.string "shipping_address1"
@@ -103,7 +97,6 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_15_192212) do
     t.string "shipping_state"
     t.string "shipping_zip_code"
     t.float "shipping_price"
-    t.float "item_subtotal"
     t.float "tax"
     t.float "total"
     t.integer "status", default: 0
