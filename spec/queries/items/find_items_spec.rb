@@ -31,7 +31,6 @@ RSpec.describe 'Find Items by role attribute', type: :request do
             id 
             name 
             description 
-            stock 
             price 
             discount 
             category {

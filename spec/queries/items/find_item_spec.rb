@@ -31,7 +31,6 @@ RSpec.describe 'Find Item by id', type: :request do
           id 
           name 
           description
-          stock 
           price 
           discount
           category {
