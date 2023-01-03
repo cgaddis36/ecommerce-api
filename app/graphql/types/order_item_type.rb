@@ -8,6 +8,7 @@ module Types
     field :quantity, Integer
     field :price, Float
     field :discount, Float
+    field :item_size_color, Types::ItemSizeColorType
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
   end

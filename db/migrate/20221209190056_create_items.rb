@@ -3,7 +3,6 @@ class CreateItems < ActiveRecord::Migration[7.0]
     create_table :items do |t|
       t.string :name
       t.string :description
-      t.integer :stock
       t.float :price
       t.float :discount
       t.integer :subcategory, default: 0

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'It removes the correct items from cart', type: :request do 
+RSpec.describe "It creates an Order", type: :request do 
   before(:each) do 
     @user0 = create(:user)
     @user1 = create(:user)
@@ -9,8 +9,8 @@ RSpec.describe 'It removes the correct items from cart', type: :request do
     @category0 = create(:category, role: 0)
     @category1 = create(:category, role: 1)
 
-    @item0 = create(:item, subcategory: 0, category_id: @category0.id)
-    @item1 = create(:item, subcategory: 1, category_id: @category0.id)
+    @item0 = create(:item, price: 25.00, subcategory: 0, category_id: @category0.id)
+    @item1 = create(:item, price: 30.00, subcategory: 1, category_id: @category0.id)
     @item2 = create(:item, subcategory: 1, category_id: @category0.id)
     @item3 = create(:item, subcategory: 0, category_id: @category0.id)
     @item4 = create(:item, subcategory: 2, category_id: @category0.id)
@@ -87,84 +87,81 @@ RSpec.describe 'It removes the correct items from cart', type: :request do
       color: @color3, 
       stock: 3
       )
-    @cart0 = create(:cart, user: @user0)
+    @cart0 = create(:cart, user: @user0, shipping_zip_code: "75281", estimated_shipping: "5.00", discount: 0.00, tax: 7.00)
+    
     @cart_item0 = create(:cart_item, item_size_color: @item_size_color0, cart: @cart0, quantity: 2)
     @cart_item1 = create(:cart_item, item_size_color: @item_size_color1, cart: @cart0, quantity: 1)
-
+    @cart0.update_total
     @cart1 = create(:cart, user: @user1)
     @cart_item2 = create(:cart_item, item_size_color: @item_size_color3, cart: @cart1, quantity: 2)
     @cart_item3 = create(:cart_item, item_size_color: @item_size_color4, cart: @cart1, quantity: 1)
 
     @cart2 = create(:cart, user: @user3)
     @cart_item4 = create(:cart_item, item_size_color: @item_size_color7, cart: @cart2, quantity: 1)
-
-
   end 
-  it "Removes one quantity of a cart_item that has more than one in the cart" do
-    quantity = 1
-    cart_item_id = @cart_item0.id
-    post "/graphql", params: {query: query_string(cart_item_id, quantity)}
+  it "Creates an order from a cart that has all of the proper items to place an order" do
+    cart_id = @cart0.id
+    first_name = "First"
+    last_name = "Name"
+    address1 = "123 Address St"
+    address2 = "Unit 123"
+    city = "Green Bay"
+    state = "Wisconsin"
+    zip_code = "54308"
+
+    post '/graphql', params: {query: query_string(
+      cart_id,
+      first_name,
+      last_name,
+      address1,
+      address2,
+      city,
+      state,
+      zip_code
+      )}
+
     reply = JSON.parse(response.body, symbolize_names: true)
-
     data = reply[:data]
-    request_data = data[:deleteCartItems]
+    request_data = data[:createOrder]
 
-    user = request_data[:user]
-    cart = user[:cart]
-
-    cart_items = cart[:cartItems]
-    cart_item = cart_items.first
-    expect(cart_item[:quantity]).to eq(1)
+    order = request_data[:order]
+    
+    expect(order).to_not be_empty
+    expect(order[:status]).to eq(0)
+    expect(order[:orderItems].count).to eq(2)
   end 
-  it "Deletes the CartItem object if the quantity selected to delete is equal to the quantity currently in the user's cart." do 
-    quantity = 2
-    cart_item_id = @cart_item2.id
-    post "/graphql", params: {query: query_string(cart_item_id, quantity)}
-    reply = JSON.parse(response.body, symbolize_names: true)
 
-    data = reply[:data]
-    request_data = data[:deleteCartItems]
 
-    user = request_data[:user]
-    cart = user[:cart]
-
-    cart_items = cart[:cartItems]
-    expect(cart_items.count).to eq(1)
-  end 
-  it "CartItems are empty if the item removed is the last in the cart" do 
-    quantity = 1
-    cart_item_id = @cart_item4.id
-    post "/graphql", params: {query: query_string(cart_item_id, quantity)}
-    reply = JSON.parse(response.body, symbolize_names: true)
-
-    data = reply[:data]
-    request_data = data[:deleteCartItems]
-
-    user = request_data[:user]
-    cart = user[:cart]
-
-    cart_items = cart[:cartItems]
-
-    expect(cart_items).to be_empty
-  end 
   def query_string(
-    cart_item_id,
-    quantity
-  )
+    cart_id,
+    first_name,
+    last_name,
+    address1,
+    address2,
+    city,
+    state,
+    zip_code
+    )
     <<~GQL 
       mutation {
-        deleteCartItems(
-          input: {
-          cartItemId: "#{cart_item_id}",
-          quantity: "#{quantity}" 
+        createOrder(input: {
+          cartId: "#{cart_id}",
+          firstName: "#{first_name}",
+          lastName: "#{last_name}",
+          address1: "#{address1}",
+          address2: "#{address2}",
+          city: "#{city}",
+          state: "#{state}",
+          zipCode: "#{zip_code}"
         }) {
-          user {
+          order {
             id 
-            cart {
+            status
+            orderItems {
               id
-              cartItems {
-                id
-                quantity
+              quantity
+              itemSizeColor {
+              stock
               }
             }
           }

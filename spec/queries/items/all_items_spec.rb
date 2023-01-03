@@ -26,18 +26,16 @@ RSpec.describe "It fetches all items in the database", type: :request do
   end 
   def query_string 
     <<~GQL 
-    query{
+    query {
       allItems {
         name 
         price 
         discount 
-        stock
         description
         category {
           role 
           title
         }
-
       }
     }
     GQL
