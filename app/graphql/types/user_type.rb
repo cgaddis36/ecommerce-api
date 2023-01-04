@@ -4,10 +4,10 @@ module Types
   class UserType < Types::BaseObject
     field :id, ID, null: false
     field :role, Integer
+    field :token, String
     field :first_name, String
     field :last_name, String
     field :email, String
-    field :password_digest, String
     field :address1, String
     field :address2, String
     field :city, String
