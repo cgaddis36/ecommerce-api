@@ -6,6 +6,7 @@ class CreateUsers < ActiveRecord::Migration[7.0]
       t.string :last_name
       t.string :email
       t.string :password_digest
+      t.string :token
       t.string :address1
       t.string :address2
       t.string :city

@@ -117,6 +117,7 @@ ActiveRecord::Schema[7.0].define(version: 2022_12_15_192212) do
     t.string "last_name"
     t.string "email"
     t.string "password_digest"
+    t.string "token"
     t.string "address1"
     t.string "address2"
     t.string "city"
