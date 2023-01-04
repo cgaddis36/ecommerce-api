@@ -163,9 +163,10 @@ RSpec.describe '', type: :request do
     cart = user[:cart]
     cart_items = cart[:cartItems]
     expect(cart_items.count).to eq(2)
+    cart_item = CartItem.find(cart_item0.id)
 
-    updated_cart_item = cart_items[1]
-    expect(updated_cart_item[:quantity]).to eq(4)
+    expect(cart_item.quantity).to eq(4)
+    
   end 
   def query_string(
     user_id,
